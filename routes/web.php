@@ -18,10 +18,20 @@ use App\Http\Controllers\LandingController;
 */
 
 // Portal Desa Routes
+Route::get('/migrate-db', function () {
+    try {
+        Artisan::call('migrate', ['--force' => true]);
+        return '<h1>✅ Migrasi Sukses!</h1><p>' . Artisan::output() . '</p>';
+    } catch (\Exception $e) {
+        return '<h1>❌ Gagal</h1><p>' . $e->getMessage() . '</p>';
+    }
+});
+
 Route::get('/', [LandingController::class, 'index'])->name('home');
 Route::get('/profil', [LandingController::class, 'profile'])->name('profile');
 Route::get('/berita', function () {
-    return view('news'); })->name('news');
+    return view('news');
+})->name('news');
 
 // Peta GIS Route
 Route::get('/peta', [MapController::class, 'index'])->name('map.index');
