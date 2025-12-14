@@ -1,0 +1,55 @@
+services:
+  # Web Service (Laravel App)
+  - type: web
+    name: gis-desa-senenan
+    env: docker
+    plan: free
+    region: singapore
+    buildCommand: docker build -t gis-desa-senenan .
+    startCommand: ./docker-entrypoint.sh
+    envVars:
+      - key: APP_NAME
+        value: GIS Desa Senenan
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        sync: false # User will set this after deploy
+      - key: APP_KEY
+        generate: true
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: gis-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: gis-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: gis-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: gis-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: gis-db
+          property: password
+
+  # Database (PostgreSQL)
+  - type: psql
+    name: gis-db
+    plan: free
+    region: singapore
+    databaseName: gis_senenan
+    user: postgres
+
+databases:
+  - name: gis-db
+    plan: free
+    region: singapore
